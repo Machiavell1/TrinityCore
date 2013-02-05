@@ -10,11 +10,10 @@
 
 # Enable precompiled headers when using the GCC compiler.
 
-file(GLOB_RECURSE sources_irc ./*.cpp ./*.h)
+file(GLOB sources *.cpp *.h)
 
-set(game_STAT_SRCS
-  ${game_STAT_SRCS}
-  $(sources_irc)
+set(irc_STAT_SRCS
+  ${sources}
 )
 
 include_directories(
@@ -117,9 +116,6 @@ include_directories(
   ${MYSQL_INCLUDE_DIR}
 )
 
-add_library(irc STATIC
-  ${irc_STAT_SRCS}
-  ${irc_STAT_PCH_SRC}
-)
+add_library(irc STATIC ${irc_STAT_SRCS})
 
 add_dependencies(worldserver revision.h)
