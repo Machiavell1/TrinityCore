@@ -1,6 +1,21 @@
+/**
+ * @file src\server\irc\IRCClient.h
+ *
+ * @brief Declares the irc client class.
+ */
+
 #pragma once
 #include "BaseSocketLayer.h"
 #include "RfcHandlers.h"
+
+/**
+ * @class IRCClient
+ *
+ * @brief Irc client.
+ *
+ * @author Machiavelli
+ * @date 9-2-2013
+ */
 
 class IRCClient
 {
@@ -25,6 +40,6 @@ class IRCClient
         int Recv(char* buf);
 
     private:
-        BaseSocketLayer* _socket;
-        RfcHandlers _handlers;
+        BaseSocketLayer* _socket;   ///< The underlying socket structure (TCP or SSL)
+        RfcHandlers _handlers       ///< @RfcHandlers object that stores function pointers for message handlers
 };

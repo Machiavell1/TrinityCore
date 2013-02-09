@@ -1,3 +1,9 @@
+/**
+ * @file \src\server\irc\IRCClient.cpp
+ *
+ * @brief Implements the irc client class.
+ */
+
 #include "IRCClient.h"
 #include "BaseSocketLayer.h"
 #include "SslSocketLayer.h"
@@ -5,6 +11,15 @@
 #include "IrcMessage.h"
 #include "RfcHandlers.h"
 #include "SystemConfig.h"
+
+/**
+ * @def MAX_FMT_SIZE
+ *
+ * @brief A macro that defines maximum format size.
+ *
+ * @author Machiavelli
+ * @date 9-2-2013
+ */
 
 #define MAX_FMT_SIZE 1024
 
@@ -16,7 +31,7 @@ IRCClient::IRCClient() : _handlers(this)
     else
         _socket = new TcpSocketLayer;
 
-    if (!_socket->Connect("defaultServ", 6667))
+    if (!_socket->Connect("irc.test.org", 6666))
     {
         printf("Something went wrong connecting, bro");
         return;
@@ -27,10 +42,30 @@ IRCClient::IRCClient() : _handlers(this)
     Send("USER TrinityCore TrinityCore TrinityCore :TrinityCore <%s>", _FULLVERSION);
 }
 
+/**
+ * @fn IRCClient::~IRCClient()
+ *
+ * @brief Destructor.
+ *
+ * @author Machiavelli
+ * @date 9-2-2013
+ */
+
 IRCClient::~IRCClient()
 {
     delete _socket;
 }
+
+/**
+ * @fn void IRCClient::Send(const char* data, ...)
+ *
+ * @brief Send data to the server and format string if needed.
+ *
+ * @author Machiavelli
+ * @date 9-2-2013
+ *
+ * @param data The data to send.
+ */
 
 void IRCClient::Send(const char* data, ...)
 {
@@ -46,10 +81,34 @@ void IRCClient::Send(const char* data, ...)
     _socket->Send(buf);
 }
 
+/**
+* @fn int IRCClient::Recv(char* buf);
+*
+* @brief Calls underlying Recv from socket.
+*
+* @author Machiavelli
+* @date 9-2-2013
+*
+* @param [in,out] buf The buffer to write data to.
+*
+* @return Amount of bytes received or -1 for error.
+*/
+
 int IRCClient::Recv(char* buf)
 {
     return _socket->Recv(buf);
 }
+
+/**
+* @fn void IRCClient::HandleMessage(const char* data);
+*
+* @brief Handles incoming messages from the server.
+*
+* @author Machiavelli
+* @date 9-2-2013
+*
+* @param data The data received.
+*/
 
 void IRCClient::HandleMessage(const char* data)
 {
@@ -79,6 +138,18 @@ void IRCClient::HandleMessage(const char* data)
     }
 }
 
+/**
+* @fn void IRCClient::Join(const char* channel, const char* key = NULL);
+*
+* @brief Joins specified channel on the IRC server.
+*
+* @author Machiavelli
+* @date 9-2-2013
+*
+* @param channel The channel.
+* @param key     (optional) the channel key.
+*/
+
 void IRCClient::Join(const char* channel, const char* key)
 {
     if (key)
@@ -86,6 +157,18 @@ void IRCClient::Join(const char* channel, const char* key)
     else
         Send("JOIN %s", channel);
 }
+
+/**
+* @fn void IRCClient::Part(const char* channel, const char* message = NULL);
+*
+* @brief Parts a channel on the IRC server.
+*
+* @author Machiavelli
+* @date 9-2-2013
+*
+* @param channel The channel to part.
+* @param message (optional) Message to send to channel on leave.
+*/
 
 void IRCClient::Part(const char* channel, const char* message)
 {
@@ -95,6 +178,17 @@ void IRCClient::Part(const char* channel, const char* message)
         Send("PART %s", channel);
 }
 
+/**
+* @fn void IRCClient::Quit(const char* quitMsg = "IRCClient::_defaultQuitMsg");
+*
+* @brief Quits from the IRC server.
+*
+* @author Machiavelli
+* @date 9-2-2013
+*
+* @param quitMsg (optional) Quit message to send to server.
+*/
+
 void IRCClient::Quit(const char* quitMsg)
 {
     if (quitMsg)
@@ -103,6 +197,17 @@ void IRCClient::Quit(const char* quitMsg)
         Send("QUIT");
     _socket->Disconnect();
 }
+
+/**
+* @fn void IRCClient::Nick(const char* nick);
+*
+* @brief Changes nickname,
+*
+* @author Machiavelli
+* @date 9-2-2013
+*
+* @param nick The new nickname.
+*/
 
 void IRCClient::Nick(const char* nick)
 {
