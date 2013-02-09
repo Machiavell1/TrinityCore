@@ -318,6 +318,14 @@ set(ace_STAT_SRCS
   WIN32_Proactor.cpp
   XML_Svc_Conf.cpp
   XTI_ATM_Mcast.cpp
+  SSL/SSL_Asynch_BIO.cpp
+  SSL/SSL_Asynch_Stream.cpp
+  SSL/SSL_Context.cpp
+  SSL/SSL_Initializer.cpp
+  SSL/SSL_SOCK.cpp
+  SSL/SSL_SOCK_Acceptor.cpp
+  SSL/SSL_SOCK_Connector.cpp
+  SSL/SSL_SOCK_Stream.cpp
 )
 
 if (USE_COREPCH)
@@ -329,6 +337,7 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/dep/acelite
   ${CMAKE_CURRENT_SOURCE_DIR}/PrecompiledHeaders
   ${CMAKE_SOURCE_DIR}/dep/zlib
+  ${OPENSSL_INCLUDE_DIR}
 )
 
 # Needed for PCH support
@@ -340,6 +349,8 @@ add_library(ace SHARED
   ${ace_STAT_SRCS}
   ${ace_PCH_SRC}
 )
+
+target_link_libraries(ace ${OPENSSL_LIBRARIES} )
 
 # Generate precompiled header
 if( USE_COREPCH )
